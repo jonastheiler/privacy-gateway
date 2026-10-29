@@ -26,3 +26,30 @@ uv run python -m privacy_gateway.local_llm "Name three Swiss cantons."
 ```
 
 Another model or quantization: `MODEL=unsloth/Qwen3-4B-GGUF:Q4_K_M docker compose up -d`.
+
+```
+uv run python -m privacy_gateway.data             # writes data/docs.jsonl (240 documents)
+uv run python -m privacy_gateway.evaluate regex   # privacy and utility of a redaction method
+```
+
+## Results so far
+
+An entity counts as **protected** if its identifying part is gone from the redacted text:
+the surname for a person, street and number for an address, the digits for numbers (so a
+reformatted IBAN still counts as leaked). **Facts kept** are non-personal values such as
+amounts, dates and order numbers that the cloud LLM still needs.
+
+| entity | count | regex |
+|---|---|---|
+| PERSON | 270 | 0.0% |
+| AHV | 90 | 100.0% |
+| IBAN | 150 | 100.0% |
+| PHONE | 150 | 100.0% |
+| EMAIL | 90 | 100.0% |
+| ADDRESS | 150 | 53.3% |
+| all | 900 | 62.2% |
+| facts kept | 420 | 100.0% |
+
+Regular expressions are perfect on numbers with a fixed format and fail on names and on
+streets without a typical suffix ("Im Gässli 4"): those need context, which is the local
+LLM's job.
