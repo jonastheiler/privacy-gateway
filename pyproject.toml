@@ -1,0 +1,25 @@
+[project]
+name = "privacy-gateway"
+version = "0.1.0"
+description = "A local LLM pseudonymizes personal data before text goes to a cloud LLM."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.2", "ruff>=0.6"]
+
+[build-system]
+requires = ["uv_build>=0.9,<0.10"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "privacy_gateway"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]

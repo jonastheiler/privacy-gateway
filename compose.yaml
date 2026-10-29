@@ -1,0 +1,23 @@
+# The "on-prem LLM server": llama.cpp on CPU, capped like a small shared box.
+services:
+  llm:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    ports:
+      - "8080:8080"
+    volumes:
+      - models:/root/.cache/llama.cpp  # downloaded GGUF files survive restarts
+    command: >
+      -hf ${MODEL:-unsloth/Qwen3-1.7B-GGUF:Q4_K_M}
+      --host 0.0.0.0 --port 8080
+      --ctx-size 4096
+      --parallel 1
+      --threads 4
+      --jinja
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4g
+
+volumes:
+  models:
