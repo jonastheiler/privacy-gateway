@@ -8,8 +8,12 @@ import requests
 URL = "http://localhost:8080/v1/chat/completions"
 
 
-def chat(prompt: str, system: str = "", max_tokens: int = 512) -> dict:
-    """Send one prompt and return the answer with its latency numbers."""
+def chat(prompt: str, system: str = "", max_tokens: int = 512, schema: dict | None = None) -> dict:
+    """Send one prompt and return the answer with its latency numbers.
+
+    With a JSON schema, llama.cpp turns it into a grammar and masks every token that would
+    break it, so the answer is valid JSON by construction. Cloud APIs rarely expose this.
+    """
     messages = [{"role": "system", "content": system}] if system else []
     messages.append({"role": "user", "content": prompt})
     body = {
@@ -19,6 +23,8 @@ def chat(prompt: str, system: str = "", max_tokens: int = 512) -> dict:
         # Qwen3 "thinks" before answering by default; that costs many tokens on a CPU.
         "chat_template_kwargs": {"enable_thinking": False},
     }
+    if schema:
+        body["response_format"] = {"type": "json_schema", "json_schema": {"schema": schema}}
     start = time.perf_counter()
     response = requests.post(URL, json=body, timeout=600)
     response.raise_for_status()

@@ -1,0 +1,80 @@
+{"id": 0, "entities": [], "valid_json": false, "seconds": 6.179425899987109, "output_tokens": 102}
+{"id": 1, "entities": [{"type": "PERSON", "text": "Lea Bernasconi"}, {"type": "IBAN", "text": "CH53 3521 1664 0789 8895 3"}, {"type": "PHONE", "text": "+41 79 522 68 42"}, {"type": "ADDRESS", "text": "Seefeldstrasse 42, 5000 Aarau"}], "valid_json": true, "seconds": 5.7818538000574335, "output_tokens": 102}
+{"id": 2, "entities": [{"type": "PERSON", "text": "Anna Steiner"}, {"type": "IBAN", "text": "CH7560665339009112890"}, {"type": "PHONE", "text": "0768003404"}, {"type": "ADDRESS", "text": "Obere Zäune 26, 3011 Bern"}], "valid_json": true, "seconds": 6.680136600043625, "output_tokens": 87}
+{"id": 3, "entities": [{"type": "PERSON", "text": "Sarah Vogel"}, {"type": "IBAN", "text": "CH3764075174665881378"}, {"type": "PHONE", "text": "+41 31 132 63 85"}, {"type": "ADDRESS", "text": "Obere Zäune 73, 9000 St. Gallen"}], "valid_json": true, "seconds": 6.137536499998532, "output_tokens": 96}
+{"id": 4, "entities": [{"type": "PERSON", "text": "Simon Meier"}, {"type": "IBAN", "text": "CH48 1094 0079 6616 1361 4"}, {"type": "PHONE", "text": "0410247815"}, {"type": "ADDRESS", "text": "Seefeldstrasse 20, 8001 Zürich"}], "valid_json": true, "seconds": 6.319782600039616, "output_tokens": 94}
+{"id": 5, "entities": [], "valid_json": false, "seconds": 5.833033900009468, "output_tokens": 97}
+{"id": 6, "entities": [], "valid_json": false, "seconds": 6.33568560006097, "output_tokens": 98}
+{"id": 7, "entities": [], "valid_json": false, "seconds": 4.518649799982086, "output_tokens": 92}
+{"id": 8, "entities": [{"type": "PERSON", "text": "Urs Fuchs"}, {"type": "IBAN", "text": "CH8668304417051376177"}, {"type": "PHONE", "text": "076 646 31 66"}, {"type": "ADDRESS", "text": "Dorfstrasse 16, 6300 Zug"}], "valid_json": true, "seconds": 5.1100619999924675, "output_tokens": 90}
+{"id": 9, "entities": [{"type": "PERSON", "text": "Thomas Müller"}, {"type": "IBAN", "text": "CH21 4314 5994 0770 4609 9"}, {"type": "PHONE", "text": "+41 76 316 31 82"}, {"type": "ADDRESS", "text": "Auf der Mauer 19, 8001 Zürich"}], "valid_json": true, "seconds": 6.851250399951823, "output_tokens": 98}
+{"id": 30, "entities": [{"type": "PERSON", "text": "Lea Bernasconi"}, {"type": "IBAN", "text": "CH39 1160 9051 8690 4856 48"}, {"type": "EMAIL", "text": "lea.bernasconi@bluewin.ch"}, {"type": "ADDRESS", "text": "Auf der Mauer 45, 8001 Zürich"}], "valid_json": true, "seconds": 4.985304899979383, "output_tokens": 95}
+{"id": 31, "entities": [{"type": "PERSON", "text": "Laura Steiner"}, {"type": "IBAN", "text": "CH69 4151 2058 8437 4485 9"}, {"type": "EMAIL", "text": "laura.steiner@bluewin.ch"}, {"type": "ADDRESS", "text": "Rosenweg 39, 8001 Zürich"}], "valid_json": true, "seconds": 7.570071800029837, "output_tokens": 91}
+{"id": 32, "entities": [{"type": "PERSON", "text": "Ursula Fuchs"}, {"type": "IBAN", "text": "CH1255851646950463700"}, {"type": "EMAIL", "text": "ursula.fuchs@sunrise.ch"}, {"type": "ADDRESS", "text": "Im Gässli 25, 4051 Basel"}], "valid_json": true, "seconds": 5.492642299970612, "output_tokens": 86}
+{"id": 33, "entities": [{"type": "PERSON", "text": "Jan Keller"}, {"type": "IBAN", "text": "CH3058420916435094047"}, {"type": "EMAIL", "text": "jan.keller@sunrise.ch"}, {"type": "ADDRESS", "text": "Seefeldstrasse 76, 6003 Luzern"}], "valid_json": true, "seconds": 6.482569299987517, "output_tokens": 84}
+{"id": 34, "entities": [{"type": "PERSON", "text": "Thomas Müller"}, {"type": "IBAN", "text": "CH52 1072 6212 6675 0509 8"}, {"type": "EMAIL", "text": "thomas.mueller@bluewin.ch"}, {"type": "ADDRESS", "text": "Rütihof 10, 6003 Luzern"}], "valid_json": true, "seconds": 6.493189899949357, "output_tokens": 89}
+{"id": 35, "entities": [{"type": "PERSON", "text": "Sarah Huber"}, {"type": "IBAN", "text": "CH26 5706 3873 0081 2258 0"}, {"type": "EMAIL", "text": "sarah.huber@bluewin.ch"}, {"type": "ADDRESS", "text": "Bahnhofstrasse 2, 6300 Zug"}], "valid_json": true, "seconds": 6.574165300000459, "output_tokens": 89}
+{"id": 36, "entities": [{"type": "PERSON", "text": "Nicole Bernasconi"}, {"type": "IBAN", "text": "CH27 5283 2389 9075 1224 4"}, {"type": "EMAIL", "text": "nicole.bernasconi@sunrise.ch"}, {"type": "ADDRESS", "text": "Rütihof 4, 6003 Luzern"}], "valid_json": true, "seconds": 6.189439299982041, "output_tokens": 93}
+{"id": 37, "entities": [{"type": "PERSON", "text": "Sarah Huber"}, {"type": "IBAN", "text": "CH59 8099 7424 3378 1220 8"}, {"type": "EMAIL", "text": "sarah.huber@bluewin.ch"}, {"type": "ADDRESS", "text": "Auf der Mauer 19, 9000 St. Gallen"}], "valid_json": true, "seconds": 5.903426999924704, "output_tokens": 92}
+{"id": 38, "entities": [{"type": "PERSON", "text": "Ursula Bühler"}, {"type": "IBAN", "text": "CH1765678125585975843"}, {"type": "EMAIL", "text": "ursula.buehler@bluewin.ch"}, {"type": "ADDRESS", "text": "Dorfstrasse 1, 6300 Zug"}], "valid_json": true, "seconds": 7.267525699920952, "output_tokens": 88}
+{"id": 39, "entities": [{"type": "PERSON", "text": "Anna Gerber"}, {"type": "IBAN", "text": "CH9678337415469204666"}, {"type": "EMAIL", "text": "anna.gerber@sunrise.ch"}, {"type": "ADDRESS", "text": "Dorfstrasse 63, 9000 St. Gallen"}], "valid_json": true, "seconds": 9.927687000017613, "output_tokens": 87}
+{"id": 60, "entities": [], "valid_json": false, "seconds": 9.824051000061445, "output_tokens": 77}
+{"id": 61, "entities": [], "valid_json": false, "seconds": 9.165775200002827, "output_tokens": 76}
+{"id": 62, "entities": [], "valid_json": false, "seconds": 6.038864399888553, "output_tokens": 75}
+{"id": 63, "entities": [], "valid_json": false, "seconds": 11.078361599938944, "output_tokens": 76}
+{"id": 64, "entities": [], "valid_json": false, "seconds": 10.922789599979296, "output_tokens": 76}
+{"id": 65, "entities": [], "valid_json": false, "seconds": 4.818090399960056, "output_tokens": 77}
+{"id": 66, "entities": [{"type": "PERSON", "text": "Laura Graf"}, {"type": "AHV", "text": "756.1935.8014.98"}, {"type": "ADDRESS", "text": "Dorfstrasse 26, 5000 Aarau"}], "valid_json": true, "seconds": 5.501370400073938, "output_tokens": 72}
+{"id": 67, "entities": [], "valid_json": false, "seconds": 4.852136600064114, "output_tokens": 76}
+{"id": 68, "entities": [], "valid_json": false, "seconds": 5.548106800066307, "output_tokens": 75}
+{"id": 69, "entities": [], "valid_json": false, "seconds": 4.1374075000640005, "output_tokens": 77}
+{"id": 90, "entities": [], "valid_json": false, "seconds": 6.534697100054473, "output_tokens": 97}
+{"id": 91, "entities": [{"type": "PERSON", "text": "Laura Meier"}, {"type": "PERSON", "text": "Ursula Bühler"}, {"type": "AHV", "text": "756.8269.6043.68"}, {"type": "IBAN", "text": "CH39 0600 2872 0295 0768 9"}, {"type": "PHONE", "text": "+41 41 687 59 51"}], "valid_json": true, "seconds": 5.912528699962422, "output_tokens": 107}
+{"id": 92, "entities": [], "valid_json": false, "seconds": 6.225162500049919, "output_tokens": 110}
+{"id": 93, "entities": [], "valid_json": false, "seconds": 5.348704200005159, "output_tokens": 99}
+{"id": 94, "entities": [], "valid_json": false, "seconds": 4.874138499959372, "output_tokens": 70}
+{"id": 95, "entities": [], "valid_json": false, "seconds": 6.547540499945171, "output_tokens": 105}
+{"id": 96, "entities": [], "valid_json": false, "seconds": 4.853334999992512, "output_tokens": 72}
+{"id": 97, "entities": [], "valid_json": false, "seconds": 5.9832034999271855, "output_tokens": 109}
+{"id": 98, "entities": [], "valid_json": false, "seconds": 5.581023400067352, "output_tokens": 103}
+{"id": 99, "entities": [], "valid_json": false, "seconds": 6.659609199967235, "output_tokens": 105}
+{"id": 120, "entities": [], "valid_json": false, "seconds": 3.5251442999579012, "output_tokens": 65}
+{"id": 121, "entities": [], "valid_json": false, "seconds": 4.528453100007027, "output_tokens": 66}
+{"id": 122, "entities": [], "valid_json": false, "seconds": 3.7540751999476925, "output_tokens": 64}
+{"id": 123, "entities": [], "valid_json": false, "seconds": 3.308551699970849, "output_tokens": 64}
+{"id": 124, "entities": [], "valid_json": false, "seconds": 3.735854700091295, "output_tokens": 64}
+{"id": 125, "entities": [], "valid_json": false, "seconds": 3.8670349000021815, "output_tokens": 71}
+{"id": 126, "entities": [], "valid_json": false, "seconds": 4.409294400014915, "output_tokens": 67}
+{"id": 127, "entities": [], "valid_json": false, "seconds": 4.324173799948767, "output_tokens": 65}
+{"id": 128, "entities": [], "valid_json": false, "seconds": 4.584876200067811, "output_tokens": 69}
+{"id": 129, "entities": [], "valid_json": false, "seconds": 3.5073041000869125, "output_tokens": 68}
+{"id": 150, "entities": [{"type": "PERSON", "text": "Mia Vogel"}, {"type": "AHV", "text": "756.8324.7287.25"}, {"type": "IBAN", "text": "CH11 3339 5128 2210 9480 2"}, {"type": "ADDRESS", "text": "Auf der Mauer 54, 3011 Bern"}], "valid_json": true, "seconds": 5.023294199956581, "output_tokens": 98}
+{"id": 151, "entities": [{"type": "PERSON", "text": "Jan Steiner"}, {"type": "AHV", "text": "756.1190.8377.44"}, {"type": "IBAN", "text": "CH97 5024 5524 1626 9204 0"}, {"type": "ADDRESS", "text": "Im Gässli 31, 6003 Luzern"}], "valid_json": true, "seconds": 5.147692200029269, "output_tokens": 98}
+{"id": 152, "entities": [], "valid_json": false, "seconds": 3.9228869999060407, "output_tokens": 76}
+{"id": 153, "entities": [], "valid_json": false, "seconds": 4.015793200000189, "output_tokens": 78}
+{"id": 154, "entities": [{"type": "PERSON", "text": "Daniel Huber"}, {"type": "AHV", "text": "756.2878.9900.72"}, {"type": "IBAN", "text": "CH96 2254 0025 0390 5254 4"}, {"type": "ADDRESS", "text": "Auf der Mauer 5, 6003 Luzern"}], "valid_json": true, "seconds": 4.956827000016347, "output_tokens": 97}
+{"id": 155, "entities": [], "valid_json": false, "seconds": 3.7136849999660626, "output_tokens": 73}
+{"id": 156, "entities": [{"type": "PERSON", "text": "Simon Müller"}, {"type": "AHV", "text": "756.9159.2446.57"}, {"type": "IBAN", "text": "CH69 0468 1399 2638 9249 0"}, {"type": "ADDRESS", "text": "Seefeldstrasse 54, 5000 Aarau"}], "valid_json": true, "seconds": 5.111701399902813, "output_tokens": 99}
+{"id": 157, "entities": [], "valid_json": false, "seconds": 4.053675900097005, "output_tokens": 75}
+{"id": 158, "entities": [], "valid_json": false, "seconds": 3.984990799915977, "output_tokens": 76}
+{"id": 159, "entities": [], "valid_json": false, "seconds": 4.084725599968806, "output_tokens": 77}
+{"id": 180, "entities": [], "valid_json": false, "seconds": 5.3251975000603124, "output_tokens": 85}
+{"id": 181, "entities": [{"type": "PERSON", "text": "Daniel Graf"}, {"type": "PHONE", "text": "031 260 17 83"}, {"type": "EMAIL", "text": "daniel.graf@bluewin.ch"}, {"type": "ADDRESS", "text": "Im Gässli 31, 4051 Basel"}], "valid_json": true, "seconds": 6.231108199921437, "output_tokens": 76}
+{"id": 182, "entities": [], "valid_json": false, "seconds": 5.188556300010532, "output_tokens": 81}
+{"id": 183, "entities": [], "valid_json": false, "seconds": 4.977952100103721, "output_tokens": 86}
+{"id": 184, "entities": [], "valid_json": false, "seconds": 5.127518899971619, "output_tokens": 79}
+{"id": 185, "entities": [], "valid_json": false, "seconds": 4.546187900006771, "output_tokens": 82}
+{"id": 186, "entities": [], "valid_json": false, "seconds": 4.607454300043173, "output_tokens": 87}
+{"id": 187, "entities": [], "valid_json": false, "seconds": 4.307266799965873, "output_tokens": 78}
+{"id": 188, "entities": [{"type": "PERSON", "text": "Daniel Koch"}, {"type": "PHONE", "text": "031 924 09 44"}, {"type": "EMAIL", "text": "daniel.koch@gmx.ch"}, {"type": "ADDRESS", "text": "Obere Zäune 23, 8001 Zürich"}], "valid_json": true, "seconds": 5.5654495999915525, "output_tokens": 78}
+{"id": 189, "entities": [], "valid_json": false, "seconds": 5.070489100064151, "output_tokens": 84}
+{"id": 210, "entities": [], "valid_json": false, "seconds": 4.48605129995849, "output_tokens": 79}
+{"id": 211, "entities": [], "valid_json": false, "seconds": 4.82981030002702, "output_tokens": 88}
+{"id": 212, "entities": [], "valid_json": false, "seconds": 4.266231499961577, "output_tokens": 77}
+{"id": 213, "entities": [], "valid_json": false, "seconds": 4.818515700055286, "output_tokens": 86}
+{"id": 214, "entities": [], "valid_json": false, "seconds": 5.109508799971081, "output_tokens": 79}
+{"id": 215, "entities": [], "valid_json": false, "seconds": 3.8924263999797404, "output_tokens": 71}
+{"id": 216, "entities": [], "valid_json": false, "seconds": 4.4031378999352455, "output_tokens": 81}
+{"id": 217, "entities": [{"type": "PERSON", "text": "Jan Huber"}, {"type": "IBAN", "text": "CH62 8647 7762 1801 1554 7"}, {"type": "PHONE", "text": "078 088 97 15"}], "valid_json": true, "seconds": 4.5673769999993965, "output_tokens": 79}
+{"id": 218, "entities": [], "valid_json": false, "seconds": 5.92284579994157, "output_tokens": 74}
+{"id": 219, "entities": [{"type": "PERSON", "text": "Lukas Huber"}, {"type": "IBAN", "text": "CH6488363092318518766"}, {"type": "PHONE", "text": "078 030 92 78"}], "valid_json": true, "seconds": 4.035455000004731, "output_tokens": 76}

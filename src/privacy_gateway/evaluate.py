@@ -2,12 +2,12 @@
 
 import argparse
 import re
+import statistics
 from collections import Counter
 
 from privacy_gateway import regex_baseline
 from privacy_gateway.data import PII_SLOTS, load_docs
-
-METHODS = {"regex": regex_baseline.redact}
+from privacy_gateway.llm_redact import load_run, pseudonymize
 
 
 def digits(text: str) -> str:
@@ -42,6 +42,8 @@ def report(docs: list[dict], redacted: list[str]) -> None:
     print(f"{'entity':<10}{'count':>7}{'protected':>11}")
     for entity_type in dict.fromkeys(PII_SLOTS.values()):
         n = total[entity_type]
+        if n == 0:  # a run on a subset may not contain every type
+            continue
         print(f"{entity_type:<10}{n:>7}{1 - leaks[entity_type] / n:>11.1%}")
     n = total.total()
     print(f"{'all':<10}{n:>7}{1 - leaks.total() / n:>11.1%}")
@@ -51,10 +53,27 @@ def report(docs: list[dict], redacted: list[str]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("method", choices=METHODS)
+    parser.add_argument("method", help='"regex" or the name of a local LLM run in data/runs')
+    parser.add_argument("--plus-regex", action="store_true", help="run the regex after the LLM")
     args = parser.parse_args()
-    docs = load_docs()
-    report(docs, [METHODS[args.method](doc["text"]) for doc in docs])
+
+    if args.method == "regex":
+        docs = load_docs()
+        redacted = [regex_baseline.redact(doc["text"]) for doc in docs]
+    else:
+        run = load_run(args.method)
+        docs = [doc for doc in load_docs() if doc["id"] in run]  # a run may cover a subset
+        redacted = [pseudonymize(doc["text"], run[doc["id"]]["entities"])[0] for doc in docs]
+        if args.plus_regex:
+            redacted = [regex_baseline.redact(text) for text in redacted]
+    report(docs, redacted)
+
+    if args.method != "regex":
+        rows = list(run.values())
+        seconds = [row["seconds"] for row in rows]
+        print(f"valid JSON: {statistics.mean(row['valid_json'] for row in rows):.1%}")
+        print(f"seconds per document: median {statistics.median(seconds):.1f}, "
+              f"max {max(seconds):.1f}")
 
 
 if __name__ == "__main__":

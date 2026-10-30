@@ -1,5 +1,6 @@
 from privacy_gateway.data import ahv_check_digit, generate, iban_check_digits
 from privacy_gateway.evaluate import leaked
+from privacy_gateway.llm_redact import pseudonymize
 from privacy_gateway.regex_baseline import redact
 
 
@@ -24,3 +25,15 @@ def test_reformatted_numbers_still_count_as_leaked():
     entity = {"type": "PHONE", "value": "+41 79 123 45 67"}
     assert leaked(entity, "Rückruf an 0791234567")
     assert not leaked(entity, "Rückruf an <PHONE>")
+
+
+def test_pseudonymize_replaces_longest_first_and_ignores_invented_entities():
+    text = "Anna Meier schreibt. Frau Meier wohnt in Bern."
+    entities = [
+        {"type": "PERSON", "text": "Meier"},
+        {"type": "PERSON", "text": "Anna Meier"},
+        {"type": "PHONE", "text": "079 000 00 00"},  # not in the text
+    ]
+    redacted, mapping = pseudonymize(text, entities)
+    assert redacted == "<PERSON_2> schreibt. Frau <PERSON_1> wohnt in Bern."
+    assert mapping == {"<PERSON_1>": "Meier", "<PERSON_2>": "Anna Meier"}

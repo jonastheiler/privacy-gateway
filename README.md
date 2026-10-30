@@ -30,7 +30,12 @@ Another model or quantization: `MODEL=unsloth/Qwen3-4B-GGUF:Q4_K_M docker compos
 ```
 uv run python -m privacy_gateway.data             # writes data/docs.jsonl (240 documents)
 uv run python -m privacy_gateway.evaluate regex   # privacy and utility of a redaction method
+
+uv run python -m privacy_gateway.llm_redact qwen3-1.7b-q4 --limit 10   # 10 documents per kind
+uv run python -m privacy_gateway.evaluate qwen3-1.7b-q4 --plus-regex
 ```
+
+Add `--no-grammar` to `llm_redact` to let the model answer without a JSON schema.
 
 ## Results so far
 
@@ -39,17 +44,27 @@ the surname for a person, street and number for an address, the digits for numbe
 reformatted IBAN still counts as leaked). **Facts kept** are non-personal values such as
 amounts, dates and order numbers that the cloud LLM still needs.
 
-| entity | count | regex |
-|---|---|---|
-| PERSON | 270 | 0.0% |
-| AHV | 90 | 100.0% |
-| IBAN | 150 | 100.0% |
-| PHONE | 150 | 100.0% |
-| EMAIL | 90 | 100.0% |
-| ADDRESS | 150 | 53.3% |
-| all | 900 | 62.2% |
-| facts kept | 420 | 100.0% |
+80 documents, 10 of each kind, Qwen3-1.7B at Q4 on 4 CPUs. **Grammar** means llama.cpp
+gets a JSON schema and masks every token that would break it.
 
-Regular expressions are perfect on numbers with a fixed format and fail on names and on
-streets without a typical suffix ("Im Gässli 4"): those need context, which is the local
-LLM's job.
+| entity | count | regex | LLM, no grammar | LLM, grammar | LLM, grammar + regex |
+|---|---|---|---|---|---|
+| PERSON | 90 | 0.0% | 28.9% | 75.6% | 97.8% |
+| AHV | 30 | 100.0% | 20.0% | 100.0% | 100.0% |
+| IBAN | 50 | 100.0% | 44.0% | 80.0% | 100.0% |
+| PHONE | 50 | 100.0% | 22.0% | 100.0% | 100.0% |
+| EMAIL | 30 | 100.0% | 40.0% | 100.0% | 100.0% |
+| ADDRESS | 50 | 52.0% | 46.0% | 100.0% | 100.0% |
+| all | 300 | 62.0% | 33.3% | 89.3% | 99.3% |
+| facts kept | 140 | 100.0% | 100.0% | 100.0% | 100.0% |
+| valid JSON | | | 32.5% | 100.0% | 100.0% |
+| seconds per document (median) | | | 5.1 | 4.8 | 4.8 |
+
+- **Regex** is perfect on numbers with a fixed format and fails on names and on streets
+  without a typical suffix ("Im Gässli 4"). On all 240 documents it protects 62.2%.
+- **Without the grammar** two answers in three are not valid JSON, so nothing is found and
+  the whole document leaks. With it every answer parses, at no extra cost in speed.
+- **LLM and regex complement each other.** The model finds full names ("Laura Graf") but
+  misses later mentions such as "Frau Graf"; the regex catches exactly those. What still
+  leaks are names without a title in an unexpected role ("Als Referenz wurde Beat Koch
+  angegeben").
