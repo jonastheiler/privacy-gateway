@@ -3,6 +3,12 @@
 **Can a small LLM running on a CPU strip personal data from text before it goes to a cloud
 LLM, and what does that cost in privacy, answer quality and speed?**
 
+**Short answer: yes, on these documents.** Qwen3-1.7B (Q4) followed by a regex protects
+99.3% of 300 planted entities at under 5 s per document on 4 CPUs. On the text the 1.7B
+model pseudonymized, a cloud LLM gives the same answers as on the original once the
+placeholders are mapped back. The documents come from only 8 templates, so this shows the approach works, not how
+well it generalizes.
+
 How it works:
 
 1. **Local server:** llama.cpp in Docker, capped at 4 CPUs and 4 GB RAM like a small
@@ -25,7 +31,9 @@ docker compose up -d                      # first start downloads the model (~1.
 uv run python -m privacy_gateway.local_llm "Name three Swiss cantons."
 ```
 
-Another model or quantization: `MODEL=unsloth/Qwen3-4B-GGUF:Q4_K_M docker compose up -d`.
+A run is named after the model the server runs. For another model or quantization, restart
+the server with `MODEL=unsloth/Qwen3-4B-GGUF:Q4_K_M docker compose up -d` and pass a new
+name, e.g. `llm_redact qwen3-4b-q4 --limit 10`.
 
 ```
 uv run python -m privacy_gateway.data             # writes data/docs.jsonl (240 documents)
@@ -53,6 +61,10 @@ amounts, dates and order numbers that the cloud LLM still needs.
 80 documents, 10 of each kind, all models on 4 CPUs and 4 GB RAM. **Grammar** means
 llama.cpp gets a JSON schema and masks every token that would break it; **+ regex** runs the
 regex after the LLM. Every method kept all 140 non-personal facts.
+
+**Caveat:** each of the 8 document kinds comes from one template, so the 80 documents are 8
+sentence patterns with different values. The table compares methods on these patterns; real
+documents with free wording would be harder, especially for names.
 
 | method | PERSON (90) | AHV (30) | IBAN (50) | PHONE (50) | EMAIL (30) | ADDRESS (50) | all (300) | + regex | valid JSON | s per doc |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -100,3 +112,17 @@ In 240 fields the cloud LLM never saw the real value: it copied `<PERSON_1>` int
 answer and the mapping restored "Laura Graf". Pseudonymization cost nothing in utility on
 this task, but copying placeholders is easy; a task that reasons about the content, such as
 drafting a reply, would be a harder test.
+
+## Key ideas
+
+- **Synthetic data gives labels for free** (`data.py`): the planted names and numbers (with
+  valid check digits) are the ground truth, so no manual annotation is needed.
+- **Constrained decoding** (`local_llm.py`): a JSON schema becomes a grammar that masks
+  invalid tokens. It lifts valid JSON from 32.5% to 100% at no cost in speed.
+- **The LLM finds, plain code replaces** (`llm_redact.py`): the model only lists entities;
+  the replacement is deterministic, longest first, and ignores entities the model invented.
+- **Reversible pseudonymization** (`cloud.py`): numbered placeholders and a mapping keep the
+  cloud answer usable. Plain `<PERSON>` redaction could not be mapped back.
+- **Measure leaks, not matches** (`evaluate.py`): an entity is protected only if its
+  identifying part is gone, so a reformatted IBAN still counts as leaked.
+- **Hybrid beats either alone:** the regex handles fixed formats, the LLM handles context.
