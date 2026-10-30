@@ -1,3 +1,4 @@
+from privacy_gateway.cloud import restore
 from privacy_gateway.data import ahv_check_digit, generate, iban_check_digits
 from privacy_gateway.evaluate import leaked
 from privacy_gateway.llm_redact import pseudonymize
@@ -37,3 +38,13 @@ def test_pseudonymize_replaces_longest_first_and_ignores_invented_entities():
     redacted, mapping = pseudonymize(text, entities)
     assert redacted == "<PERSON_2> schreibt. Frau <PERSON_1> wohnt in Bern."
     assert mapping == {"<PERSON_1>": "Meier", "<PERSON_2>": "Anna Meier"}
+
+
+def test_restore_undoes_pseudonymize_in_the_cloud_answer():
+    text = "Anna Meier, IBAN CH93 0076 2011 6238 5295 7"
+    entities = [{"type": "PERSON", "text": "Anna Meier"},
+                {"type": "IBAN", "text": "CH93 0076 2011 6238 5295 7"}]
+    _, mapping = pseudonymize(text, entities)
+    answer = {"name": "Frau <PERSON_1>", "iban": "<IBAN_1>", "amount": ""}
+    assert restore(answer, mapping) == {
+        "name": "Frau Anna Meier", "iban": "CH93 0076 2011 6238 5295 7", "amount": ""}

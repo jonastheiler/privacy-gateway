@@ -37,6 +37,12 @@ uv run python -m privacy_gateway.evaluate qwen3-1.7b-q4 --plus-regex
 
 Add `--no-grammar` to `llm_redact` to let the model answer without a JSON schema.
 
+The round trip needs an Anthropic API key in `ANTHROPIC_API_KEY` (160 requests, about $1):
+
+```
+uv run python -m privacy_gateway.cloud qwen3-1.7b-q4
+```
+
 ## Results so far
 
 An entity counts as **protected** if its identifying part is gone from the redacted text:
@@ -71,3 +77,24 @@ JSON schema and masks every token that would break it; "+ regex" runs the regex 
 - **The 4B model** fixes those semantic misses (referees, every IBAN) but still skips
   "Herr Rossi" after the full name; with the regex it protects all 300 entities, at 2.5
   times the latency of the 1.7B model.
+
+### Round trip
+
+Claude Opus 5.5 extracts a case record (name, amount, date, IBAN, phone, email, address)
+from each of the 80 documents, once from the original and once from the text the 1.7B model
+pseudonymized. Placeholders in the second answer are mapped back to the real values.
+
+| field | filled | hidden from the cloud | same answer |
+|---|---|---|---|
+| name | 80 | 80 | 100% |
+| amount | 40 | 0 | 100% |
+| date | 70 | 0 | 100% |
+| IBAN | 50 | 40 | 100% |
+| phone | 40 | 40 | 100% |
+| email | 30 | 30 | 100% |
+| address | 50 | 50 | 100% |
+
+In 240 fields the cloud LLM never saw the real value: it copied `<PERSON_1>` into its
+answer and the mapping restored "Laura Graf". Pseudonymization cost nothing in utility on
+this task, but copying placeholders is easy; a task that reasons about the content, such as
+drafting a reply, would be a harder test.

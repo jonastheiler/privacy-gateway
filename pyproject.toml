@@ -5,6 +5,7 @@ description = "A local LLM pseudonymizes personal data before text goes to a clo
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "anthropic>=2.3.0",
     "requests>=2.32",
 ]
 
