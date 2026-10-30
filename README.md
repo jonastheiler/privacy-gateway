@@ -3,7 +3,7 @@
 **Can a small LLM running on a CPU strip personal data from text before it goes to a cloud
 LLM, and what does that cost in privacy, answer quality and speed?**
 
-Work in progress. The plan:
+How it works:
 
 1. **Local server:** llama.cpp in Docker, capped at 4 CPUs and 4 GB RAM like a small
    on-prem box, serving a quantized Qwen3 model over an OpenAI-compatible API.
@@ -43,40 +43,42 @@ The round trip needs an Anthropic API key in `ANTHROPIC_API_KEY` (160 requests, 
 uv run python -m privacy_gateway.cloud qwen3-1.7b-q4
 ```
 
-## Results so far
+## Results
 
 An entity counts as **protected** if its identifying part is gone from the redacted text:
 the surname for a person, street and number for an address, the digits for numbers (so a
 reformatted IBAN still counts as leaked). **Facts kept** are non-personal values such as
 amounts, dates and order numbers that the cloud LLM still needs.
 
-80 documents, 10 of each kind, Qwen3 at Q4 on 4 CPUs. **Grammar** means llama.cpp gets a
-JSON schema and masks every token that would break it; "+ regex" runs the regex after the LLM.
+80 documents, 10 of each kind, all models on 4 CPUs and 4 GB RAM. **Grammar** means
+llama.cpp gets a JSON schema and masks every token that would break it; **+ regex** runs the
+regex after the LLM. Every method kept all 140 non-personal facts.
 
-| entity | count | regex | 1.7B, no grammar | 1.7B | 1.7B + regex | 4B | 4B + regex |
-|---|---|---|---|---|---|---|---|
-| PERSON | 90 | 0.0% | 28.9% | 75.6% | 97.8% | 84.4% | 100.0% |
-| AHV | 30 | 100.0% | 20.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| IBAN | 50 | 100.0% | 44.0% | 80.0% | 100.0% | 100.0% | 100.0% |
-| PHONE | 50 | 100.0% | 22.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| EMAIL | 30 | 100.0% | 40.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| ADDRESS | 50 | 52.0% | 46.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| all | 300 | 62.0% | 33.3% | 89.3% | 99.3% | 95.3% | 100.0% |
-| facts kept | 140 | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% | 100.0% |
-| valid JSON | | | 32.5% | 100.0% | 100.0% | 100.0% | 100.0% |
-| seconds per document (median) | | | 5.1 | 4.8 | 4.8 | 12.2 | 12.2 |
+| method | PERSON (90) | AHV (30) | IBAN (50) | PHONE (50) | EMAIL (30) | ADDRESS (50) | all (300) | + regex | valid JSON | s per doc |
+|---|---|---|---|---|---|---|---|---|---|---|
+| regex only | 0.0% | 100% | 100% | 100% | 100% | 52.0% | 62.0% | | | |
+| 1.7B Q4, no grammar | 28.9% | 20.0% | 44.0% | 22.0% | 40.0% | 46.0% | 33.3% | 75.3% | 32.5% | 5.1 |
+| 0.6B Q4 | 72.2% | 83.3% | 8.0% | 60.0% | 80.0% | 92.0% | 64.7% | 98.0% | 100% | 2.2 |
+| 1.7B Q4 | 75.6% | 100% | 80.0% | 100% | 100% | 100% | 89.3% | 99.3% | 100% | 4.8 |
+| 1.7B Q8 | 77.8% | 100% | 98.0% | 100% | 100% | 100% | 93.0% | 100% | 100% | 9.0 |
+| 4B Q4 | 84.4% | 100% | 100% | 100% | 100% | 100% | 95.3% | 100% | 100% | 12.2 |
+
+Seconds are the median per document. Models are the Qwen3 GGUFs from
+[unsloth](https://huggingface.co/unsloth); Q4 is Q4_K_M.
 
 - **Regex** is perfect on numbers with a fixed format and fails on names and on streets
   without a typical suffix ("Im Gässli 4"). On all 240 documents it protects 62.2%.
 - **Without the grammar** two answers in three are not valid JSON, so nothing is found and
   the whole document leaks. With it every answer parses, at no extra cost in speed.
-- **LLM and regex complement each other.** The model finds full names ("Laura Graf") but
-  misses later mentions such as "Frau Graf"; the regex catches exactly those. What still
-  leaks are names without a title in an unexpected role ("Als Referenz wurde Beat Koch
-  angegeben").
-- **The 4B model** fixes those semantic misses (referees, every IBAN) but still skips
-  "Herr Rossi" after the full name; with the regex it protects all 300 entities, at 2.5
-  times the latency of the 1.7B model.
+- **LLM and regex complement each other.** The models find full names ("Laura Graf") but
+  miss later mentions such as "Frau Graf"; the regex catches exactly those. The 1.7B Q4
+  model also misses names without a title in an unexpected role ("Als Referenz wurde Beat
+  Koch angegeben"); the larger runs find them.
+- **Model size matters more than quantization.** 0.6B never lists an IBAN and is barely
+  better than the regex alone. Q8 instead of Q4 adds 3.7 points to the 1.7B model for twice
+  the latency; 4B adds 6 points for 2.5 times.
+- **Best trade-off: 1.7B Q4 + regex,** 99.3% at under 5 s per document. 1.7B Q8 + regex
+  and 4B + regex reach 100%.
 
 ### Round trip
 
