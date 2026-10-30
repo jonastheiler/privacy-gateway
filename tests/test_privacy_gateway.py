@@ -45,6 +45,6 @@ def test_restore_undoes_pseudonymize_in_the_cloud_answer():
     entities = [{"type": "PERSON", "text": "Anna Meier"},
                 {"type": "IBAN", "text": "CH93 0076 2011 6238 5295 7"}]
     _, mapping = pseudonymize(text, entities)
-    answer = {"name": "Frau <PERSON_1>", "iban": "<IBAN_1>", "amount": ""}
-    assert restore(answer, mapping) == {
-        "name": "Frau Anna Meier", "iban": "CH93 0076 2011 6238 5295 7", "amount": ""}
+    answer = "Guten Tag <PERSON_1>, wir überweisen auf <IBAN_1>."
+    assert restore(answer, mapping) == (
+        "Guten Tag Anna Meier, wir überweisen auf CH93 0076 2011 6238 5295 7.")

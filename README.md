@@ -5,8 +5,9 @@ LLM, and what does that cost in privacy, answer quality and speed?**
 
 **Short answer: yes, on these documents.** Qwen3-1.7B (Q4) followed by a regex protects
 99.3% of 300 planted entities at under 5 s per document on 4 CPUs. On the text the 1.7B
-model pseudonymized, a cloud LLM gives the same answers as on the original once the
-placeholders are mapped back. The documents come from only 8 templates, so this shows the approach works, not how
+model pseudonymized, a cloud LLM keeps every fact once the placeholders are mapped back; the
+one cost is that a reply can no longer say "Frau Graf", because `<PERSON_1>` hides the
+gender. The documents come from only 8 templates, so this shows the approach works, not how
 well it generalizes.
 
 How it works:
@@ -48,7 +49,7 @@ Add `--no-grammar` to `llm_redact` to let the model answer without a JSON schema
 The round trip needs an Anthropic API key in `ANTHROPIC_API_KEY` (160 requests, about $1):
 
 ```
-uv run python -m privacy_gateway.cloud qwen3-1.7b-q4
+uv run python -m privacy_gateway.cloud record qwen3-1.7b-q4   # or: reply
 ```
 
 ## Results
@@ -94,9 +95,11 @@ Seconds are the median per document. Models are the Qwen3 GGUFs from
 
 ### Round trip
 
-Claude Opus 5.5 extracts a case record (name, amount, date, IBAN, phone, email, address)
-from each of the 80 documents, once from the original and once from the text the 1.7B model
-pseudonymized. Placeholders in the second answer are mapped back to the real values.
+Claude Opus 5.5 works on each of the 80 documents twice, once on the original and once on
+the text the 1.7B model pseudonymized. Placeholders in the second answer are mapped back to
+the real values and the two answers are compared.
+
+**Task 1, case record:** extract name, amount, date, IBAN, phone, email and address.
 
 | field | filled | hidden from the cloud | same answer |
 |---|---|---|---|
@@ -109,9 +112,22 @@ pseudonymized. Placeholders in the second answer are mapped back to the real val
 | address | 50 | 50 | 100% |
 
 In 240 fields the cloud LLM never saw the real value: it copied `<PERSON_1>` into its
-answer and the mapping restored "Laura Graf". Pseudonymization cost nothing in utility on
-this task, but copying placeholders is easy; a task that reasons about the content, such as
-drafting a reply, would be a harder test.
+answer and the mapping restored "Laura Graf".
+
+**Task 2, reply:** draft a short German letter to the person. Free text can't be compared
+exactly, so three checks target what pseudonymization could break:
+
+| check | original | pseudonymized |
+|---|---|---|
+| placeholders the cloud changed, so they can't be mapped back | | 0 of 80 |
+| facts and full name of the original reply also in the restored one | | 140 of 140 |
+| reply addresses the person as "Frau/Herr <surname>" | 91.2% | 15.0% |
+
+The content survives, the courtesy doesn't. "Guten Tag Herr Müller" becomes "Guten Tag Urs
+Müller", "Sehr geehrte/r Laura Graf" or "Liebe/r …", because `<PERSON_1>` hides the gender.
+The 15% that keep "Frau/Herr" are all documents where the local model left "Frau Graf" in
+the text: the salutation only survives where privacy failed. Gendered placeholders
+(`<FRAU_1>`) would fix this at the price of revealing one bit about the person.
 
 ## Key ideas
 
