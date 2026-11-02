@@ -10,12 +10,64 @@ one cost is that a reply can no longer say "Frau Graf", because `<PERSON_1>` hid
 gender. The documents come from only 8 templates, so this shows the approach works, not how
 well it generalizes.
 
-How it works:
+## Example
+
+A real document from the data (id 210), followed through each step of the 1.7B Q4 run.
+
+**1. The original stays on your machine:**
+
+```
+Bitte Lukas Keller zurückrufen, es geht um die Bestellung 3712808082 über CHF 7'418.50.
+Rückruf an 041 240 51 65. Die Rückzahlung soll auf CH7885816662419202001 gehen.
+```
+
+**2. The local model only lists what it finds:**
+
+```json
+{"PERSON": ["Lukas Keller"], "AHV": [], "IBAN": ["CH7885816662419202001"],
+ "PHONE": ["041 240 51 65"], "EMAIL": [], "ADDRESS": []}
+```
+
+**3. Plain code swaps the values, and only this text goes to the cloud.** Personal data is
+gone, while the order number and amount that the task needs remain:
+
+```
+Bitte <PERSON_1> zurückrufen, es geht um die Bestellung 3712808082 über CHF 7'418.50.
+Rückruf an <PHONE_1>. Die Rückzahlung soll auf <IBAN_1> gehen.
+```
+
+**4. Claude drafts a reply using the placeholders, and the local mapping restores the real
+values:**
+
+```
+Guten Tag Lukas Keller
+
+Vielen Dank für Ihre Nachricht. Wir haben Ihr Anliegen zur Bestellung 3712808082 über
+CHF 7'418.50 erhalten. Gerne rufen wir Sie in Kürze unter der Nummer 041 240 51 65 zurück,
+[...]. Die Rückzahlung erfolgt wie gewünscht auf das Konto mit der IBAN CH7885816662419202001.
+```
+
+Not every document goes this smoothly. These failures, also from the data, are why the LLM
+and the regex are combined:
+
+| failure | what stays in the text | who catches it |
+|---|---|---|
+| Regex can't recognize a bare name | `Bitte Lukas Keller zurückrufen` | LLM: `Bitte <PERSON_1> zurückrufen` |
+| LLM misses a later mention | `Frau Graf stellte sich [...] vor` | regex: `<PERSON> stellte sich [...] vor` |
+| LLM miscopies a value, adding a digit (`...4856 48`), so it is ignored | `CH39 1160 9051 8690 4856 4` | regex: `<IBAN>` |
+
+**Two limits.** The regex's plain `<PERSON>` can't be mapped back, so the round trip below
+uses the LLM alone, which protects 89.3% of entities rather than 99.3%. And only direct
+identifiers are measured: in the medical note the name is hidden, but "Rückenschmerzen" still
+goes to the cloud.
+
+## How it works
+
 
 1. **Local server:** llama.cpp in Docker, capped at 4 CPUs and 4 GB RAM like a small
    on-prem box, serving a quantized Qwen3 model over an OpenAI-compatible API.
 2. **Data:** synthetic Swiss documents (emails, invoices, notes) with planted names, AHV
-   numbers, IBANs, addresses and phone numbers, so the labels come for free.
+   (social security) numbers, IBANs, addresses and phone numbers, so the labels come for free.
 3. **Pseudonymize:** the local model replaces each entity with a placeholder such as
    `<PERSON_1>`, compared with a regex baseline.
 4. **Round trip:** the cloud LLM works on the redacted text and the placeholders are mapped
